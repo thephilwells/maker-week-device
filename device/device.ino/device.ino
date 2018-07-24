@@ -1,12 +1,6 @@
-/*
-Adafruit Arduino - Lesson 6. Inputs
-*/
-
-int ledPin = 5;
 int buttonApin = 9;
 int buttonBpin = 8;
 int buttonCpin = 10;
-int onOff = 0;
 
 int buttonAState = HIGH;
 int buttonBState = HIGH;
@@ -16,11 +10,12 @@ int lastButtonAState = HIGH;
 int lastButtonBState = HIGH;
 int lastButtonCState = HIGH;
 
-byte leds = 0;
+char outerLetters[7] = "DMRABO";
+char centerLetter[2] = "T";
+char allLetters[8]   = "DMRABOT";
 
 void setup() 
 {
-  pinMode(ledPin, OUTPUT);
   pinMode(buttonApin, INPUT_PULLUP);  
   pinMode(buttonBpin, INPUT_PULLUP);
   pinMode(buttonCpin, INPUT_PULLUP);
@@ -52,16 +47,4 @@ void loop()
       lastButtonCState = buttonCState;
       delay(50);
     }
-
-//    
-//    if (digitalRead(buttonBpin) == LOW)
-//    {
-//      digitalWrite(ledPin, LOW);
-//      Serial.println("blorp");
-//    }
-//    
-//    if (digitalRead(buttonCpin) == LOW)
-//    {
-//      Serial.println("ahooga");
-//    }
 }
