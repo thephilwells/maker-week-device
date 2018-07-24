@@ -11,9 +11,13 @@ int lastButtonBState = HIGH;
 int lastButtonCState = HIGH;
 
 String outerLetters[7] = {"D","M","R","A","B","O"};
+String wordList[49];
 
 String input[20];
 int possibleScore = 0;
+int playerScore = 0;
+int wordsFound = -1;
+String alert;
 
 String centerLetter = "T";
 String northwestLetter = outerLetters[0];
@@ -84,6 +88,8 @@ void setup()
   pinMode(buttonCpin, INPUT_PULLUP);
   Serial.begin(9600);
   calculateTotalPoints();
+  submit("TOOT");
+  submit("FART");
 }
 
 void loop() 
@@ -113,9 +119,56 @@ void calculateTotalPoints()
         possibleScore += buffString.length();
       }
     }
-    delay(200);
+    delay(20);
   }
   Serial.println("New possible score: ");
   Serial.println(possibleScore);
+}
+
+void submit(String submission)
+{
+  // handle input errors
+  
+  // check for word in dictionary
+  char buffer[12];
+  bool gotOne;
+  for (int i=0; i < 49; i++) {
+    gotOne = false;
+    strcpy_P(buffer, (char*)pgm_read_word(&dictionary_table[i]));
+    String buffString = String(buffer);
+    if (submission == buffString)
+    {
+      gotOne = true;
+      // add word to list of found words
+      wordList[wordsFound++] = submission;
+    
+      // add word value to player's score
+      int wordValue = calculateWordValue(submission);
+      playerScore += wordValue;
+    
+      // set alert
+      alert = mapWordValueToMessage(wordValue)+" +" + wordValue + " ("+submission+")";
+      // re-draw screen
+
+      break;
+    }
+  }
+  if (gotOne == false)
+  {
+    alert = submission+" not in word list.";
+  }
+  Serial.println(alert);
+}
+
+int calculateWordValue(String submission)
+{
+  // TODO: return calculated word value
+  return 5;
+}
+
+String mapWordValueToMessage(int value)
+{
+  // TODO: map word value to message
+  return "Nice!";
 }
 
