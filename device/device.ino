@@ -10,9 +10,9 @@ int lastButtonAState = HIGH;
 int lastButtonBState = HIGH;
 int lastButtonCState = HIGH;
 
-char outerLetters[7] = "DMRABO";
-char centerLetter[2] = "T";
-char allLetters[8]   = "DMRABOT";
+char allLetters[8]   = "TDMRABO";
+
+String dictionary[167] = {"ABBOT","ABORT","AORTA","ATOM","ATTAR","BOAT","BOOT","BOTTOM","BRAT","DART","DARTBOARD","DATA","DOORMAT","DOTARD","DRAT","MARMOT","MART","MATADOR","MOAT","MOOT","MORTAR","MOTOR","MOTORBOAT","MOTTO","ORATOR","RATATAT","ROBOT","ROOT","ROTATOR","ROTO","ROTOR","TABARD","TABOO","TABOR","TARO","TAROT","TART","TARTAR","TATTOO","TOAD","TOMATO","TOMB","TOOT","TORO","TORT","TRAM","TROD","TROT"};
 
 void setup() 
 {
