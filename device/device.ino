@@ -93,6 +93,7 @@ void setup()
   submit("TOTOTO");
   submit("FART");
   submit("TOO");
+  submit("DRAM");
 }
 
 void loop() 
@@ -191,6 +192,22 @@ bool validateSubmission(String submission)
   }
 
   /// missing center letter
+  bool hasCenterLetter = false;
+  for (int j=0; j < submission.length(); j++)
+  {
+    String letter = String(submission.charAt(j));
+    if (letter == centerLetter)
+    {
+      hasCenterLetter = true;
+      break;
+    }
+  }
+  if (hasCenterLetter == false)
+  {
+    alert = "Missing key letter! ("+submission+")";
+    return true;
+  }
+  
   return false;
 }
 
