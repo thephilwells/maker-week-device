@@ -90,6 +90,7 @@ void setup()
   calculateTotalPoints();
   submit("TOOT");
   submit("FART");
+  submit("TOO");
 }
 
 void loop() 
@@ -127,18 +128,22 @@ void calculateTotalPoints()
 
 void submit(String submission)
 {
-  // handle input errors
-  
   // check for word in dictionary
   char buffer[12];
-  bool gotOne;
+  bool inWordList;
   for (int i=0; i < 49; i++) {
-    gotOne = false;
+    inWordList = false;
+    bool isError = validateSubmission(submission);
+    if (isError == true)
+    {
+      inWordList = true; // otherwise we'll get 'not in word list' alert
+      break;
+    }
     strcpy_P(buffer, (char*)pgm_read_word(&dictionary_table[i]));
     String buffString = String(buffer);
     if (submission == buffString)
     {
-      gotOne = true;
+      inWordList = true;
       // add word to list of found words
       wordList[wordsFound++] = submission;
     
@@ -153,11 +158,26 @@ void submit(String submission)
       break;
     }
   }
-  if (gotOne == false)
+  if (inWordList == false)
   {
     alert = submission+" not in word list.";
   }
   Serial.println(alert);
+}
+
+bool validateSubmission(String submission)
+{
+  /// too short
+  if (submission.length()<4)
+  {
+    alert = "Too short! ("+submission+")";
+    return true;
+  }
+
+  /// bad letters
+
+  /// missing center letter
+  return false;
 }
 
 int calculateWordValue(String submission)
