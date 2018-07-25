@@ -1,5 +1,6 @@
+#include <SpellingBeeGame.h>
 
-
+SpellingBeeGame game;
 
 class Button
 {
@@ -68,6 +69,7 @@ String currentWord = "";
 void setup()
 {
   Serial.begin(9600);
+  game.submit("TOOT");
 }
 
 void loop()

@@ -76,7 +76,7 @@ const static char* const dictionary_table[] PROGMEM = {string_0,string_1,string_
 
 char pangram[12] = "MORTARBOARD";
 
-void submit(String submission)
+void SpellingBeeGame::submit(String submission)
 {
   // check for word in dictionary
   char buffer[12];
@@ -122,7 +122,7 @@ void submit(String submission)
   Serial.println(alert);
 }
 
-bool _validateSubmission(String submission)
+bool SpellingBeeGame::_validateSubmission(String submission)
 {
   /// too short
   if (submission.length()<4)
@@ -165,7 +165,7 @@ bool _validateSubmission(String submission)
   return false;
 }
 
-int _calculateWordValue(String submission)
+int SpellingBeeGame::_calculateWordValue(String submission)
 {
   if (submission == String(pangram))
   {
@@ -178,7 +178,7 @@ int _calculateWordValue(String submission)
   return submission.length();
 }
 
-String _mapWordValueToMessage(int value)
+String SpellingBeeGame::_mapWordValueToMessage(int value)
 {
   if (value <= 4)
   {
@@ -191,7 +191,7 @@ String _mapWordValueToMessage(int value)
   return "Awesome!";
 }
 
-void shuffle()
+void SpellingBeeGame::shuffle()
 {
   Serial.println("Before shuffle: "+outerLetterString);
   for (int i=0; i < 6; i++)

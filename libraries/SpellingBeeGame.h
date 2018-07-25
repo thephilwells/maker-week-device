@@ -10,9 +10,8 @@
 class SpellingBeeGame
 {
   public:
-    void submit();
+    void submit(String);
     void shuffle();
-    void calculateTotalPoints();
     String wordList[49];
     int possibleScore;
     int playerScore;
@@ -26,6 +25,10 @@ class SpellingBeeGame
     String southeastLetter;
     String southwestLetter;
     String westLetter;
+  private:
+    bool _validateSubmission(String);
+    int _calculateWordValue(String);
+    String _mapWordValueToMessage(int);
 };
 
 #endif
