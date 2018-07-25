@@ -90,6 +90,8 @@ void setup()
   Serial.begin(9600);
   calculateTotalPoints();
   submit("TOOT");
+  submit("TOMATO");
+  submit("MORTARBOARD");
   submit("TOTOTO");
   submit("FART");
   submit("TOO");
@@ -213,8 +215,15 @@ bool validateSubmission(String submission)
 
 int calculateWordValue(String submission)
 {
-  // TODO: return calculated word value
-  return 5;
+  if (submission == String(pangram))
+  {
+    return String(pangram).length() + 7;
+  }
+  if (submission.length() == 4)
+  {
+    return 1;
+  }
+  return submission.length();
 }
 
 String mapWordValueToMessage(int value)
