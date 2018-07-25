@@ -17,7 +17,7 @@ String wordList[49];
 String input[20];
 int possibleScore = 0;
 int playerScore = 0;
-int wordsFound = -1;
+int wordsFound = 0;
 String alert;
 
 String centerLetter = "T";
@@ -174,6 +174,7 @@ void submit(String submission)
   {
     alert = submission+" not in word list.";
   }
+  Serial.println("Word list: "+String(wordList[0])+String(wordList[1])+String(wordList[2]));
   Serial.println(alert);
 }
 
