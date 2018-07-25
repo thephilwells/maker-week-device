@@ -96,6 +96,8 @@ void setup()
   submit("FART");
   submit("TOO");
   submit("DRAM");
+  shuffle();
+  shuffle();
 }
 
 void loop() 
@@ -174,7 +176,7 @@ void submit(String submission)
   {
     alert = submission+" not in word list.";
   }
-  Serial.println("Word list: "+String(wordList[0])+String(wordList[1])+String(wordList[2]));
+  // Serial.println("Word list: "+String(wordList[0])+String(wordList[1])+String(wordList[2]));
   Serial.println(alert);
 }
 
@@ -245,5 +247,19 @@ String mapWordValueToMessage(int value)
     return "Nice!";
   }
   return "Awesome!";
+}
+
+void shuffle()
+{
+  Serial.println(outerLetterString);
+  for (int i=0; i < 6; i++)
+  {
+    int n = random(0, 6);
+    String temp = outerLetters[n];
+    outerLetters[n] = outerLetters[i];
+    outerLetters[i] = temp;
+  }
+  outerLetterString = outerLetters[0] + outerLetters[1] + outerLetters[2] + outerLetters[3] + outerLetters[4] + outerLetters[5] + outerLetters[6];
+  Serial.println(outerLetterString);
 }
 
