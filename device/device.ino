@@ -157,7 +157,14 @@ void submit(String submission)
       playerScore += wordValue;
     
       // set alert
-      alert = mapWordValueToMessage(wordValue)+" +" + wordValue + " ("+submission+")";
+      if (submission == String(pangram))
+      {
+        alert = "PANGRAM! +" + String(wordValue) + " ("+submission+")";
+      }
+      else
+      {
+        alert = mapWordValueToMessage(wordValue)+" +" + wordValue + " ("+submission+")";
+      }
       // re-draw screen
 
       break;
@@ -228,7 +235,14 @@ int calculateWordValue(String submission)
 
 String mapWordValueToMessage(int value)
 {
-  // TODO: map word value to message
-  return "Nice!";
+  if (value <= 4)
+  {
+    return "Good!";
+  }
+  if (value > 4 && value <=6)
+  {
+    return "Nice!";
+  }
+  return "Awesome!";
 }
 
