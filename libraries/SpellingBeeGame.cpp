@@ -1,9 +1,15 @@
+/*
+  SpellingBeeGame.cpp - Library containg Spelling Bee game logic
+*/
+
+#include "Arduino.h"
+#include "SpellingBeeGame.h"
+
 String outerLetters[7] = {"D","M","R","A","B","O"};
 String outerLetterString = "DMRABO";
 String wordList[49];
 
-String input[20];
-int possibleScore = 0;
+int possibleScore = 188;
 int playerScore = 0;
 int wordsFound = 0;
 String alert;
@@ -70,54 +76,6 @@ const static char* const dictionary_table[] PROGMEM = {string_0,string_1,string_
 
 char pangram[12] = "MORTARBOARD";
 
-void setup()
-{
-  Serial.begin(9600);
-  calculateTotalPoints();
-  submit("TOOT");
-  submit("TOMATO");
-  submit("MORTARBOARD");
-  submit("TOTOTO");
-  submit("FART");
-  submit("TOO");
-  submit("DRAM");
-  shuffle();
-  shuffle();
-}
-
-void loop() 
-{
-
-}
-
-void calculateTotalPoints()
-{
-  char buffer[12];
-  for (int i=0; i < 49; i++) {
-    strcpy_P(buffer, (char*)pgm_read_word(&dictionary_table[i]));
-//    Serial.println(buffer);
-    String buffString = String(buffer);
-    if (buffer == pangram)
-    {
-      possibleScore += buffString.length() + 7;
-    }
-    else
-    {
-      if (buffString.length() == 4)
-      {
-        possibleScore += 1;
-      }
-      else
-      {
-        possibleScore += buffString.length();
-      }
-    }
-    delay(20);
-  }
-//  Serial.println("New possible score: ");
-//  Serial.println(possibleScore);
-}
-
 void submit(String submission)
 {
   // check for word in dictionary
@@ -125,7 +83,7 @@ void submit(String submission)
   bool inWordList;
   for (int i=0; i < 49; i++) {
     inWordList = false;
-    bool isError = validateSubmission(submission);
+    bool isError = _validateSubmission(submission);
     if (isError == true)
     {
       inWordList = true; // otherwise we'll get 'not in word list' alert
@@ -140,7 +98,7 @@ void submit(String submission)
       wordList[wordsFound++] = submission;
     
       // add word value to player's score
-      int wordValue = calculateWordValue(submission);
+      int wordValue = _calculateWordValue(submission);
       playerScore += wordValue;
     
       // set alert
@@ -150,7 +108,7 @@ void submit(String submission)
       }
       else
       {
-        alert = mapWordValueToMessage(wordValue)+" +" + wordValue + " ("+submission+")";
+        alert = _mapWordValueToMessage(wordValue)+" +" + wordValue + " ("+submission+")";
       }
       // re-draw screen
 
@@ -161,11 +119,10 @@ void submit(String submission)
   {
     alert = submission+" not in word list.";
   }
-  // Serial.println("Word list: "+String(wordList[0])+String(wordList[1])+String(wordList[2]));
   Serial.println(alert);
 }
 
-bool validateSubmission(String submission)
+bool _validateSubmission(String submission)
 {
   /// too short
   if (submission.length()<4)
@@ -208,7 +165,7 @@ bool validateSubmission(String submission)
   return false;
 }
 
-int calculateWordValue(String submission)
+int _calculateWordValue(String submission)
 {
   if (submission == String(pangram))
   {
@@ -221,7 +178,7 @@ int calculateWordValue(String submission)
   return submission.length();
 }
 
-String mapWordValueToMessage(int value)
+String _mapWordValueToMessage(int value)
 {
   if (value <= 4)
   {
@@ -244,7 +201,12 @@ void shuffle()
     outerLetters[n] = outerLetters[i];
     outerLetters[i] = temp;
   }
+  northwestLetter = outerLetters[0];
+  northeastLetter = outerLetters[1];
+  eastLetter = outerLetters[2];
+  southeastLetter = outerLetters[3];
+  southwestLetter = outerLetters[4];
+  westLetter = outerLetters[5];
   outerLetterString = outerLetters[0] + outerLetters[1] + outerLetters[2] + outerLetters[3] + outerLetters[4] + outerLetters[5] + outerLetters[6];
   Serial.println("After shuffle: "+outerLetterString);
 }
-
