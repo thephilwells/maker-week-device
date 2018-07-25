@@ -11,6 +11,7 @@ int lastButtonBState = HIGH;
 int lastButtonCState = HIGH;
 
 String outerLetters[7] = {"D","M","R","A","B","O"};
+String outerLetterString = "DMRABO";
 String wordList[49];
 
 String input[20];
@@ -89,6 +90,7 @@ void setup()
   Serial.begin(9600);
   calculateTotalPoints();
   submit("TOOT");
+  submit("TOTOTO");
   submit("FART");
   submit("TOO");
 }
@@ -103,7 +105,7 @@ void calculateTotalPoints()
   char buffer[12];
   for (int i=0; i < 49; i++) {
     strcpy_P(buffer, (char*)pgm_read_word(&dictionary_table[i]));
-    Serial.println(buffer);
+//    Serial.println(buffer);
     String buffString = String(buffer);
     if (buffer == pangram)
     {
@@ -122,8 +124,8 @@ void calculateTotalPoints()
     }
     delay(20);
   }
-  Serial.println("New possible score: ");
-  Serial.println(possibleScore);
+//  Serial.println("New possible score: ");
+//  Serial.println(possibleScore);
 }
 
 void submit(String submission)
@@ -175,6 +177,18 @@ bool validateSubmission(String submission)
   }
 
   /// bad letters
+  for (int i=0; i < submission.length(); i++)
+  {
+    String letter = String(submission.charAt(i));
+    if (outerLetterString.indexOf(String(letter)) == -1)
+    {
+      if (letter != centerLetter)
+      {
+        alert = "Bad letters! ("+submission+")";
+        return true;
+      }
+    }
+  }
 
   /// missing center letter
   return false;
