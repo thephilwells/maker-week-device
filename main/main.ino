@@ -122,12 +122,12 @@ class Button
 // set up control buttons
 Button btnSubmit(12);
 //Button btnShuffle(8);
-//Button btnDelete(9);
+Button btnDelete(4);
 //Button btnReset(10)
 
 // set up hex buttons
-int hexButtonCount = 3;
-Button btnsHex[3] = {3, 4, 5};
+int hexButtonCount = 1;
+Button btnsHex[1] = {3};
 Button centerHex(6);
 
 // set up logic variables
@@ -157,6 +157,21 @@ void loop()
   {
     currentWord += centerLetter;
     Serial.println(currentWord);
+  }
+
+  bool deletePressed = btnDelete.Update();
+  if (deletePressed)
+  {
+    if (currentWord == "")
+    {
+      // do nothing
+      Serial.println(currentWord);
+    }
+    else
+    {
+      currentWord.remove(currentWord.length() -1);
+      Serial.println(currentWord);
+    }
   }
 
   bool pressed = btnSubmit.Update();
