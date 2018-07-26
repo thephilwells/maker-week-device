@@ -1,5 +1,5 @@
-String outerLetters[7] = {"D","M","R","A","B","O"};
-String outerLetterString = "DMRABO";
+String outerLetters[7] = {"O","M","A","D","B","R"};
+String outerLetterString = "OMADBR";
 String wordList[49];
 
 int possibleScore = 188;
@@ -120,14 +120,15 @@ class Button
 };
 
 // set up control buttons
-Button btnSubmit(4);
+Button btnSubmit(12);
 //Button btnShuffle(8);
 //Button btnDelete(9);
 //Button btnReset(10)
 
 // set up hex buttons
-int hexButtonCount = 2;
-Button btnsHex[2] = {5,6};
+int hexButtonCount = 3;
+Button btnsHex[3] = {3, 4, 5};
+Button centerHex(6);
 
 // set up logic variables
 String currentWord = "";
@@ -136,13 +137,8 @@ String currentWord = "";
 void setup()
 {
   Serial.begin(9600);
-  submit("TOOT");
-  submit("TOMATO");
-  submit("MORTARBOARD");
-  submit("TOTOTO");
-  submit("FART");
-  submit("TOO");
-  submit("DRAM");
+  Serial.println("Outer letters: "+outerLetters[0]+outerLetters[1]+outerLetters[2]);
+  Serial.println("Center letter: "+centerLetter);
 }
 
 void loop()
@@ -151,14 +147,22 @@ void loop()
   for (int i = 0; i < hexButtonCount; i++){
     bool pressed = btnsHex[i].Update();
     if (pressed){
-      currentWord += i;
+      currentWord += outerLetters[i];
       Serial.println(currentWord);
     }
   }
 
+  bool centerPressed = centerHex.Update();
+  if (centerPressed)
+  {
+    currentWord += centerLetter;
+    Serial.println(currentWord);
+  }
+
   bool pressed = btnSubmit.Update();
   if (pressed){
-    Serial.println("submit");
+    submit(currentWord);
+    currentWord = "";
   }
 }
 
