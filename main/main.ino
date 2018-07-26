@@ -121,9 +121,8 @@ class Button
 
 // set up control buttons
 Button btnSubmit(12);
-//Button btnShuffle(8);
+Button btnShuffle(5);
 Button btnDelete(4);
-//Button btnReset(10)
 
 // set up hex buttons
 int hexButtonCount = 1;
@@ -172,6 +171,15 @@ void loop()
       currentWord.remove(currentWord.length() -1);
       Serial.println(currentWord);
     }
+  }
+
+  bool shufflePressed = btnShuffle.Update();
+  if (shufflePressed)
+  {
+    Serial.println("Shuffling..");
+    shuffle();
+    Serial.println("Outer letters: "+outerLetters[0]+outerLetters[1]+outerLetters[2]);
+    Serial.println("Center letter: "+centerLetter);
   }
 
   bool pressed = btnSubmit.Update();
@@ -311,7 +319,6 @@ String _mapWordValueToMessage(int value)
 
 void shuffle()
 {
-  Serial.println("Before shuffle: "+outerLetterString);
   for (int i=0; i < 6; i++)
   {
     int n = random(0, 6);
@@ -326,6 +333,5 @@ void shuffle()
   southwestLetter = outerLetters[4];
   westLetter = outerLetters[5];
   outerLetterString = outerLetters[0] + outerLetters[1] + outerLetters[2] + outerLetters[3] + outerLetters[4] + outerLetters[5] + outerLetters[6];
-  Serial.println("After shuffle: "+outerLetterString);
 }
 
