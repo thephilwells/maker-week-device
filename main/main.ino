@@ -170,22 +170,22 @@ void submit(String submission)
 {
   // check for word in dictionary
   char buffer[12];
-  bool inWordList;
+  bool inDictionary;
   bool isError = _validateSubmission(submission);
   if (isError == true)
   {
-    inWordList = true; // otherwise we'll get 'not in word list' alert
+    inDictionary = true; // otherwise we'll get 'not in word list' alert
   }
   else
   {
     for (int i=0; i < 49; i++) {
-      inWordList = false;
+      inDictionary = false;
   
       strcpy_P(buffer, (char*)pgm_read_word(&dictionary_table[i]));
       String buffString = String(buffer);
       if (submission == buffString)
       {
-        inWordList = true;
+        inDictionary = true;
         // add word to list of found words
         wordList[wordsFound++] = submission;
       
@@ -208,7 +208,7 @@ void submit(String submission)
       }
     }
   }
-  if (inWordList == false)
+  if (inDictionary == false)
   {
     alert = submission+" not in word list.";
   }
@@ -253,6 +253,16 @@ bool _validateSubmission(String submission)
   {
     alert = "Missing key letter! ("+submission+")";
     return true;
+  }
+
+  // already found
+  for (int k=0; k < 49; k++)
+  {
+    if (submission == wordList[k])
+    {
+      alert = "Already found! ("+submission+")";
+      return true;
+    }
   }
   
   return false;
