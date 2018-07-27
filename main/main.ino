@@ -7,23 +7,22 @@
 #define COLORED     0
 #define UNCOLORED   1
 
-String outerLetters[7] = {"O","M","A","D","B","R"};
+//String outerLetters[7] = {"O","M","A","D","B","R"};
 String outerLetterString = "OMADBR";
 String wordList[49];
 
 int possibleScore = 188;
 int playerScore = 0;
 int wordsFound = 0;
-String alert = "BEE excited!\0";
 char alertX[50] = "BEE impressed!\0";
 
 String centerLetter = "T";
-String northwestLetter = outerLetters[0];
-String northeastLetter = outerLetters[1];
-String eastLetter = outerLetters[2];
-String southeastLetter = outerLetters[3];
-String southwestLetter = outerLetters[4];
-String westLetter = outerLetters[5];
+String northwestLetter =  String(outerLetterString[0]);
+String northeastLetter = String(outerLetterString[1]);
+String eastLetter = String(outerLetterString[2]);
+String southeastLetter = String(outerLetterString[3]);
+String southwestLetter = String(outerLetterString[4]);
+String westLetter = String(outerLetterString[5]);
 
 const char string_0[] PROGMEM = "ABBOT";
 const char string_1[] PROGMEM = "ABORT";
@@ -145,11 +144,13 @@ Button centerHex(6);
 String currentWord = "";
 
 Epd epd;
+
 void setup()
 {
   Serial.begin(9600);
-  Serial.println("Outer letters: "+outerLetters[0]+outerLetters[1]+outerLetters[2]);
+  Serial.println("Outer letters: "+String(outerLetterString[0])+String(outerLetterString[1])+String(outerLetterString[2]));
   Serial.println("Center letter: "+centerLetter);
+  Serial.println(outerLetterString[0]);
   
   if (epd.Init() != 0) {
     Serial.print("e-Paper init failed");
@@ -165,7 +166,7 @@ void loop()
   for (int i = 0; i < hexButtonCount; i++){
     bool pressed = btnsHex[i].Update();
     if (pressed){
-      currentWord += outerLetters[i];
+      currentWord += String(outerLetterString[i]);
       Serial.println(currentWord);
     }
   }
@@ -197,7 +198,7 @@ void loop()
   {
     Serial.println("Shuffling..");
     shuffle();
-    Serial.println("Outer letters: "+outerLetters[0]+outerLetters[1]+outerLetters[2]);
+    Serial.println("Outer letters: "+String(outerLetterString[0])+String(outerLetterString[1])+String(outerLetterString[2]));
     Serial.println("Center letter: "+centerLetter);
   }
 
@@ -243,7 +244,7 @@ void submit(String submission)
         }
         else
         {
-          alert = _mapWordValueToMessage(wordValue)+" +" + wordValue + " ("+submission+")\0";
+          String alert = _mapWordValueToMessage(wordValue)+" +" + wordValue + " ("+submission+")\0";
           alert.toCharArray(alertX, 50);
         }
         // re-draw screen
@@ -254,7 +255,7 @@ void submit(String submission)
   }
   if (inDictionary == false)
   {
-    alert = submission+" not in word list.\0";
+    String alert = submission+" not in word list.\0";
     alert.toCharArray(alertX, 50);
   }
   redraw();
@@ -265,7 +266,7 @@ bool _validateSubmission(String submission)
   /// too short
   if (submission.length()<4)
   {
-    alert = "Too short! ("+submission+")\0";
+    String alert = "Too short! ("+submission+")\0";
     alert.toCharArray(alertX, 50);
     return true;
   }
@@ -278,7 +279,7 @@ bool _validateSubmission(String submission)
     {
       if (letter != centerLetter)
       {
-        alert = "Bad letters! ("+submission+")\0";
+        String alert = "Bad letters! ("+submission+")\0";
         alert.toCharArray(alertX, 50);
         return true;
       }
@@ -298,7 +299,7 @@ bool _validateSubmission(String submission)
   }
   if (hasCenterLetter == false)
   {
-    alert = "Missing key letter! ("+submission+")\0";
+    String alert = "Missing key letter! ("+submission+")\0";
     alert.toCharArray(alertX, 50);
     return true;
   }
@@ -308,7 +309,7 @@ bool _validateSubmission(String submission)
   {
     if (submission == wordList[k])
     {
-      alert = "Already found! ("+submission+")\0";
+      String alert = "Already found! ("+submission+")\0";
       alert.toCharArray(alertX, 50);
       return true;
     }
@@ -348,17 +349,17 @@ void shuffle()
   for (int i=0; i < 6; i++)
   {
     int n = random(0, 6);
-    String temp = outerLetters[n];
-    outerLetters[n] = outerLetters[i];
-    outerLetters[i] = temp;
+//    String temp = String(outerLetterString[n]);
+//    String(outerLetterString[n]) = String(outerLetterString[i]);
+//    String(outerLetterString[i]) = temp;
   }
-  northwestLetter = outerLetters[0];
-  northeastLetter = outerLetters[1];
-  eastLetter = outerLetters[2];
-  southeastLetter = outerLetters[3];
-  southwestLetter = outerLetters[4];
-  westLetter = outerLetters[5];
-  outerLetterString = outerLetters[0] + outerLetters[1] + outerLetters[2] + outerLetters[3] + outerLetters[4] + outerLetters[5] + outerLetters[6];
+  northwestLetter = String(outerLetterString[0]);
+  northeastLetter = String(outerLetterString[1]);
+  eastLetter = String(outerLetterString[2]);
+  southeastLetter = String(outerLetterString[3]);
+  southwestLetter = String(outerLetterString[4]);
+  westLetter = String(outerLetterString[5]);
+  outerLetterString = String(outerLetterString[0]) + String(outerLetterString[1]) + String(outerLetterString[2]) + String(outerLetterString[3]) + String(outerLetterString[4]) + String(outerLetterString[5]) + String(outerLetterString[6]);
 }
 
 char* str2char(String s)
@@ -371,15 +372,17 @@ char* str2char(String s)
 
 void redraw()
 {
+   
+    char char_array[6];
+    outerLetterString.toCharArray(char_array,6);
+    unsigned char image[1024];
     epd.ClearFrame();
-
   /**
     * Due to RAM not enough in Arduino UNO, a frame buffer is not allowed.
     * In this case, a smaller image buffer is allocated and you have to 
     * update a partial display several times.
     * 1 byte = 8 pixels, therefore you have to set 8*N pixels at a time.
     */
-  unsigned char image[1204];
   
   Paint paint(image, 32, 176);    //width should be the multiple of 8 
   
@@ -392,7 +395,7 @@ void redraw()
   
   // northwest letter
   paint.Clear(UNCOLORED);
-  paint.DrawStringAt(0, 0, "O", &Font12, COLORED);
+  paint.DrawStringAt(0, 0, outerLetterString[0], &Font12, COLORED);
   epd.TransmitPartialData(paint.GetImage(), 96, 32, paint.GetWidth(), paint.GetHeight());
 
   // center letter
@@ -402,27 +405,27 @@ void redraw()
   
   // north letter
   paint.Clear(UNCOLORED);
-  paint.DrawStringAt(0, 0, "M", &Font12, COLORED);
+  paint.DrawStringAt(0, 0, outerLetterString[1], &Font12, COLORED);
   epd.TransmitPartialData(paint.GetImage(), 115, 60, paint.GetWidth(), paint.GetHeight());
 
   // northeast letter
   paint.Clear(UNCOLORED);
-  paint.DrawStringAt(0, 0, "A", &Font12, COLORED);
+  paint.DrawStringAt(0, 0, outerLetterString[2], &Font12, COLORED);
   epd.TransmitPartialData(paint.GetImage(), 96, 88, paint.GetWidth(), paint.GetHeight());
 
   // southwest letter
   paint.Clear(UNCOLORED);
-  paint.DrawStringAt(0, 0, "R", &Font12, COLORED);
+  paint.DrawStringAt(0, 0, outerLetterString[5], &Font12, COLORED);
   epd.TransmitPartialData(paint.GetImage(), 65, 32, paint.GetWidth(), paint.GetHeight());
 
   // southeast letter
   paint.Clear(UNCOLORED);
-  paint.DrawStringAt(0, 0, "D", &Font12, COLORED);
+  paint.DrawStringAt(0, 0, outerLetterString[3], &Font12, COLORED);
   epd.TransmitPartialData(paint.GetImage(), 65, 88, paint.GetWidth(), paint.GetHeight());
 
   // south letter
   paint.Clear(UNCOLORED);
-  paint.DrawStringAt(0, 0, "B", &Font12, COLORED);
+  paint.DrawStringAt(0, 0, outerLetterString[4], &Font12, COLORED);
   epd.TransmitPartialData(paint.GetImage(), 50, 60, paint.GetWidth(), paint.GetHeight());
 
   // score
@@ -439,7 +442,9 @@ void redraw()
   /* This displays the data from the SRAM in e-Paper module */
   epd.DisplayFrame();
 
+  free(image);
+
   /* Deep sleep */
-  epd.Sleep();
+//  epd.Sleep();
 }
 
