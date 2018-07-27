@@ -8,22 +8,26 @@
 #define UNCOLORED   1
 
 //String outerLetters[7] = {"O","M","A","D","B","R"};
-String outerLetterString = "OMADBR\0";
+char outerLetterString[7] = "OMADBR";
 String wordList[49];
 
 int possibleScore = 188;
 int playerScore = 0;
 int wordsFound = 0;
 char alertX[50] = "BEE impressed!\0";
-char letterBuff[50];
 
-char centerLetter[1] = {"T"};
+char centerLetter[2] = "T";
 char northwestLetter =  outerLetterString[0];
 char northLetter = outerLetterString[1];
 char northeastLetter = outerLetterString[2];
 char southeastLetter = outerLetterString[3];
 char southLetter = outerLetterString[4];
 char southwestLetter = outerLetterString[5];
+
+// set up logic variables
+char currentWord[50];
+int currentWordIndex = 0;
+
 
 const char string_0[] PROGMEM = "ABBOT";
 const char string_1[] PROGMEM = "ABORT";
@@ -139,24 +143,20 @@ int hexButtonCount = 1;
 Button btnsHex[1] = {3};
 Button centerHex(6);
 
-// set up logic variables
-String currentWord = "";
-
 Epd epd;
 
 void setup()
 {
   Serial.begin(9600);
-  Serial.println("Outer letters: "+String(outerLetterString[0])+String(outerLetterString[1])+String(outerLetterString[2]));
-  Serial.println("Center letter: "+centerLetter[0]);
-  Serial.println(outerLetterString[0]);
+  Serial.println(outerLetterString);
+  Serial.println(centerLetter[0]);
   
   if (epd.Init() != 0) {
     Serial.print("e-Paper init failed");
     return;
   }
 
-  redraw();
+  redraw(outerLetterString);
 }
 
 void loop()
@@ -165,30 +165,37 @@ void loop()
   for (int i = 0; i < hexButtonCount; i++){
     bool pressed = btnsHex[i].Update();
     if (pressed){
-      currentWord += String(outerLetterString[i]);
+//      currentWord += outerLetterString[i];
+      currentWord[currentWordIndex] = outerLetterString[i];
+      currentWordIndex++;
       Serial.println(currentWord);
+      redraw(outerLetterString);
     }
   }
 
   bool centerPressed = centerHex.Update();
   if (centerPressed)
   {
-    currentWord += centerLetter;
+    currentWord[currentWordIndex] = centerLetter[0];
+    currentWordIndex++;
     Serial.println(currentWord);
+    redraw(outerLetterString);
   }
 
   bool deletePressed = btnDelete.Update();
   if (deletePressed)
   {
-    if (currentWord == "")
+    if (currentWord[0] == NULL)
     {
       // do nothing
       Serial.println(currentWord);
     }
     else
     {
-      currentWord.remove(currentWord.length() -1);
+      currentWord[currentWordIndex] = NULL;
+      currentWordIndex--;
       Serial.println(currentWord);
+      redraw(outerLetterString);
     }
   }
 
@@ -204,7 +211,8 @@ void loop()
   bool pressed = btnSubmit.Update();
   if (pressed){
     submit(currentWord);
-    currentWord = "";
+    memset(currentWord, 0, sizeof(currentWord));
+//    currentWord = "";
   }
 }
 
@@ -257,7 +265,7 @@ void submit(String submission)
     String alert = submission+" not in word list.\0";
     alert.toCharArray(alertX, 50);
   }
-  redraw();
+  redraw(outerLetterString);
 }
 
 bool _validateSubmission(String submission)
@@ -273,8 +281,8 @@ bool _validateSubmission(String submission)
   /// bad letters
   for (int i=0; i < submission.length(); i++)
   {
-    String letter = String(submission.charAt(i));
-    if (outerLetterString.indexOf(String(letter)) == -1)
+    char letter = submission.charAt(i);
+    if (strstr(outerLetterString, letter) == NULL)
     {
       if (letter != centerLetter)
       {
@@ -358,7 +366,6 @@ void shuffle()
   southeastLetter = outerLetterString[3];
   southLetter = outerLetterString[4];
   southwestLetter = outerLetterString[5];
-  outerLetterString = String(outerLetterString[0]) + String(outerLetterString[1]) + String(outerLetterString[2]) + String(outerLetterString[3]) + String(outerLetterString[4]) + String(outerLetterString[5]) + String(outerLetterString[6]);
 }
 
 char* str2char(String s)
@@ -369,15 +376,9 @@ char* str2char(String s)
   return char_array;
 }
 
-void redraw()
+void redraw(char* OLS)
 {
-   
-  
-    char char_array[7];
-    outerLetterString.toCharArray(char_array,7);
-    Serial.println(outerLetterString);
     unsigned char image[1024];
-    Serial.println(outerLetterString);
     epd.ClearFrame();
   /**
     * Due to RAM not enough in Arduino UNO, a frame buffer is not allowed.
@@ -387,13 +388,19 @@ void redraw()
     */
   
   Paint paint(image, 32, 176);    //width should be the multiple of 8 
-  Serial.println(outerLetterString);
   
   paint.SetRotate(ROTATE_90);
   
   // northwest letter
   paint.Clear(UNCOLORED);
-  paint.DrawCharAt(0, 0, northwestLetter, &Font12, COLORED);
+  OLS[0] = outerLetterString[0];
+  OLS[1] = outerLetterString[1];
+  OLS[2] = outerLetterString[2];
+  OLS[3] = outerLetterString[3];
+  OLS[4] = outerLetterString[4];
+  OLS[5] = outerLetterString[5];
+  char quack = northwestLetter;
+  paint.DrawCharAt(0, 0, quack, &Font12, COLORED);
   epd.TransmitPartialData(paint.GetImage(), 96, 32, paint.GetWidth(), paint.GetHeight());
 
   // center letter
@@ -428,12 +435,12 @@ void redraw()
 
   // score
   paint.Clear(UNCOLORED);
-  paint.DrawStringAt(9, 0, "0 / 188\0", &Font12, COLORED);
+  paint.DrawStringAt(9, 0, "0 / 188", &Font12, COLORED);
   epd.TransmitPartialData(paint.GetImage(), 119, 120, paint.GetWidth(), paint.GetHeight());
 
   // input
   paint.Clear(UNCOLORED);
-  paint.DrawStringAt(9, 0, "MORTARBOARD_\0", &Font16, COLORED);
+  paint.DrawStringAt(9, 0, currentWord, &Font16, COLORED);
   epd.TransmitPartialData(paint.GetImage(), 65, 120, paint.GetWidth(), paint.GetHeight());
 
   // alert
@@ -443,6 +450,7 @@ void redraw()
 
   /* This displays the data from the SRAM in e-Paper module */
   epd.DisplayFrame();
+  Serial.println("Ready..");
 
   /* Deep sleep */
 //  epd.Sleep();
