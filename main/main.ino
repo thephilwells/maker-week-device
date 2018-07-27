@@ -373,6 +373,7 @@ char* str2char(String s)
 void redraw()
 {
    
+  Serial.println(outerLetterString);
     char char_array[6];
     outerLetterString.toCharArray(char_array,6);
     unsigned char image[1024];
@@ -395,7 +396,7 @@ void redraw()
   
   // northwest letter
   paint.Clear(UNCOLORED);
-  paint.DrawStringAt(0, 0, outerLetterString[0], &Font12, COLORED);
+  paint.DrawCharAt(0, 0, outerLetterString[0], &Font12, COLORED);
   epd.TransmitPartialData(paint.GetImage(), 96, 32, paint.GetWidth(), paint.GetHeight());
 
   // center letter
@@ -405,32 +406,32 @@ void redraw()
   
   // north letter
   paint.Clear(UNCOLORED);
-  paint.DrawStringAt(0, 0, outerLetterString[1], &Font12, COLORED);
+  paint.DrawCharAt(0, 0, outerLetterString[1], &Font12, COLORED);
   epd.TransmitPartialData(paint.GetImage(), 115, 60, paint.GetWidth(), paint.GetHeight());
 
   // northeast letter
   paint.Clear(UNCOLORED);
-  paint.DrawStringAt(0, 0, outerLetterString[2], &Font12, COLORED);
+  paint.DrawCharAt(0, 0, outerLetterString[2], &Font12, COLORED);
   epd.TransmitPartialData(paint.GetImage(), 96, 88, paint.GetWidth(), paint.GetHeight());
 
   // southwest letter
   paint.Clear(UNCOLORED);
-  paint.DrawStringAt(0, 0, outerLetterString[5], &Font12, COLORED);
+  paint.DrawCharAt(0, 0, outerLetterString[5], &Font12, COLORED);
   epd.TransmitPartialData(paint.GetImage(), 65, 32, paint.GetWidth(), paint.GetHeight());
 
   // southeast letter
   paint.Clear(UNCOLORED);
-  paint.DrawStringAt(0, 0, outerLetterString[3], &Font12, COLORED);
+  paint.DrawCharAt(0, 0, outerLetterString[3], &Font12, COLORED);
   epd.TransmitPartialData(paint.GetImage(), 65, 88, paint.GetWidth(), paint.GetHeight());
 
   // south letter
   paint.Clear(UNCOLORED);
-  paint.DrawStringAt(0, 0, outerLetterString[4], &Font12, COLORED);
+  paint.DrawCharAt(0, 0, outerLetterString[4], &Font12, COLORED);
   epd.TransmitPartialData(paint.GetImage(), 50, 60, paint.GetWidth(), paint.GetHeight());
 
   // score
   paint.Clear(UNCOLORED);
-  paint.DrawStringAt(9, 0, "0 / 188", &Font12, COLORED);
+  paint.DrawStringAt(9, 0, "0 / 188\0", &Font12, COLORED);
   epd.TransmitPartialData(paint.GetImage(), 119, 120, paint.GetWidth(), paint.GetHeight());
 
   // input
@@ -441,8 +442,7 @@ void redraw()
 
   /* This displays the data from the SRAM in e-Paper module */
   epd.DisplayFrame();
-
-  free(image);
+  Serial.println(outerLetterString);
 
   /* Deep sleep */
 //  epd.Sleep();
